@@ -18,89 +18,69 @@ public class Controller {
     private TextField calculatorScreen;
     @FXML
     private String command = "";
+    private double result = 0.0;
     private String currentNumbers = "";
+    private String operationNumbers = "";
 
     @FXML
-    private void numberSelected(Event event) {
+    private void getNumber(Event event) {
         double val = Double.parseDouble(((Button) event.getSource()).getText());
-        try {
-            switch (command) {
-                case "":
-                    String valRemoveIndication = String.valueOf(val).replaceAll("([0-9])\\.0+([^0-9]|$)", "$1$2");
-                    String currentNumbersWithoutIndication = currentNumbers.replaceAll("([0-9])\\.0+([^0-9]|$)", "$1$2");
-                    currentNumbers = currentNumbersWithoutIndication + valRemoveIndication;
-                    calculatorScreen.setText(currentNumbers);
-                    break;
-                case "sub":
-                    double subValue = Double.parseDouble(currentNumbers);
-                    subValue -= val;
-                    currentNumbers = String.valueOf(subValue);
-                    calculatorScreen.setText(String.valueOf(val));
-                    command = "";
-                    break;
-                case "add": {
-                    double addValue = Double.parseDouble(currentNumbers);
-                    addValue += val;
-                    currentNumbers = String.valueOf(addValue);
-                    calculatorScreen.setText(String.valueOf(val));
-                    command = "";
-                    break;
-                }
-                case "div": {
-                    double addValue = Double.parseDouble(currentNumbers);
-                    addValue /= val;
-                    currentNumbers = String.valueOf(addValue);
-                    calculatorScreen.setText(String.valueOf(val));
-                    command = "";
-                    break;
-                }
-                case "mul": {
-                    double addValue = Double.parseDouble(currentNumbers);
-                    addValue *= val;
-                    currentNumbers = String.valueOf(addValue);
-                    calculatorScreen.setText(String.valueOf(val));
-                    command = "";
-                    break;
-                }
-            }
-        } catch (NullPointerException ignored) {
+        String valRemoveIndication = String.valueOf(val).replaceAll("([0-9])\\.0+([^0-9]|$)", "$1$2");
+        if (command.equals("")) {
+            currentNumbers += valRemoveIndication;
+        } else {
+            operationNumbers += valRemoveIndication;
         }
+        calculatorScreen.appendText(valRemoveIndication);
     }
 
     @FXML
     private void equals() {
-        calculatorScreen.setText(currentNumbers);
+        switch (command) {
+            case "sub" -> result = Double.parseDouble(currentNumbers) - Double.parseDouble(operationNumbers);
+            case "add" -> result = Double.parseDouble(currentNumbers) + Double.parseDouble(operationNumbers);
+            case "mul" -> result = Double.parseDouble(currentNumbers) * Double.parseDouble(operationNumbers);
+            case "div" -> result = Double.parseDouble(currentNumbers) / Double.parseDouble(operationNumbers);
+        }
+        calculatorScreen.setText(String.valueOf(result));
     }
 
     @FXML
     private void subtract() {
         command = "sub";
-        calculatorScreen.setText("-");
+        calculatorScreen.appendText("-");
     }
 
     @FXML
     private void multiplication() {
         command = "mul";
-        calculatorScreen.setText("*");
+        calculatorScreen.appendText("*");
     }
 
     @FXML
     private void addition() {
         command = "add";
-        calculatorScreen.setText("+");
+        calculatorScreen.appendText("+");
     }
 
     @FXML
     private void divide() {
         command = "div";
-        calculatorScreen.setText("÷");
+        calculatorScreen.appendText("÷");
     }
 
     @FXML
     private void clear() {
         command = "";
         currentNumbers = "";
+        operationNumbers = "";
         calculatorScreen.setText("");
+    }
+
+    @FXML
+    private void floatingPoint() {
+        currentNumbers += ".";
+        calculatorScreen.appendText(".");
     }
 
 
